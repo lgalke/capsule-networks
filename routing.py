@@ -55,8 +55,11 @@ def main():
     print("Passengers:", passengers, passengers.size(), sep='\n')
 
     caps1 = CapsuleLayer(N_SEGMENTS, N_SEGMENTS, 1, 1, num_iterations=1)
-    print("Apply to passengers")
-    print(caps1(passengers[0].unsqueeze(-1)))
+    print("Apply caps layer to passengers")
+    out = caps1(passengers[0].unsqueeze(-1))
+    print("Output size:", out.size())
+    print("Output:", out.squeeze())
+    # TODO check how to proceed in other impl
 
 
 if __name__ == '__main__':
