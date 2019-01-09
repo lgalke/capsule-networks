@@ -12,6 +12,10 @@ import torch.nn.functional as F
 from torch import nn
 import numpy as np
 
+# import required for usage of CapsuleLayer in other modules
+# lgalke, Wed Jan  9 16:02:25 CET 2019
+from torch.autograd import Variable
+
 BATCH_SIZE = 100
 NUM_CLASSES = 10
 NUM_EPOCHS = 500
