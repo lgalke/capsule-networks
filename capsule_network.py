@@ -68,7 +68,15 @@ class CapsuleLayer(nn.Module):
         if self.num_route_nodes != -1:
             priors = x[None, :, :, None, :] @ self.route_weights[:, None, :, :, :]
 
-            logits = Variable(torch.zeros(*priors.size())).cuda()
+
+            logits = Variable(torch.zeros(*priors.size()))
+
+            # Improve non-CUDA compatibility
+            # lgalke, Wed Jan  9 16:07:37 CET 2019
+            if x.is_cuda:
+                logits = logits.cuda()
+
+
             for i in range(self.num_iterations):
                 probs = softmax(logits, dim=2)
                 outputs = self.squash((probs * priors).sum(dim=2, keepdim=True))
@@ -114,7 +122,11 @@ class CapsuleNet(nn.Module):
         if y is None:
             # In all batches, get the most active capsule.
             _, max_length_indices = classes.max(dim=1)
-            y = Variable(torch.eye(NUM_CLASSES)).cuda().index_select(dim=0, index=max_length_indices.data)
+            # y = Variable(torch.eye(NUM_CLASSES)).cuda().index_select(dim=0, index=max_length_indices.data)
+            # Improved non-cuda compat, lgalke
+            y = Variable(torch.eye(NUM_CLASSES)).index_select(dim=0, index=max_length_indices.data)
+            if x.is_cuda:
+                y = y.cuda()
 
         reconstructions = self.decoder((x * y[:, :, None]).view(x.size(0), -1))
 
