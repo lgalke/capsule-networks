@@ -40,19 +40,24 @@ N_TIMESTEPS = 1
 
 def generate_data(n_timesteps, n_segments):
     """ Generate toy data """
+    # Connections among segments
+    adjacency = torch.rand(n_segments, n_segments) < 0.5
+
     loads = torch.softmax(torch.rand(n_timesteps, n_segments), dim=1)
     # passengers: [timestep, src, dst]
     # If passenger is on diagonal, src == dst
-    passengers = torch.softmax(torch.rand(n_timesteps, n_segments * n_segments), dim=1)\
-        .view(n_timesteps, n_segments, n_segments)
-    return loads, passengers
+    passengers = torch.softmax(torch.rand(n_timesteps, n_segments, n_segments), dim=1)
+
+    # Inter-segment adjacency is static
+    return adjacency, loads, passengers
 
 def main():
     """ Run a toy experiment """
     print("Initializing %d segments randomly" % N_SEGMENTS)
-    loads, passengers = generate_data(N_TIMESTEPS, N_SEGMENTS)
+    adjacency, loads, passengers = generate_data(N_TIMESTEPS, N_SEGMENTS)
     print("Load per segments:", loads, loads.size(), sep='\n')
     print("Passengers:", passengers, passengers.size(), sep='\n')
+    print("Adjacency:", adjacency, adjacency.size(), sep='\n')
 
     caps1 = CapsuleLayer(N_SEGMENTS, N_SEGMENTS, 1, 1, num_iterations=1)
     print("Apply caps layer to passengers")
