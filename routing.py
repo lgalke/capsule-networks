@@ -21,14 +21,14 @@ def show_city(adjacency):
     adjacency = np.asarray(adjacency)
     graph = nx.Graph(adjacency)
     plt.figure(1)
-    nx.draw(graph)
+    nx.draw(graph, with_labels=True)
     plt.show()
 
 
 def generate_data(n_segments, n_timesteps):
     """ Generate toy data """
     # Random lobster looks as messy as typical (german) cities
-    graph = nx.random_lobster(10, 0.9, 0.9)
+    graph = nx.random_lobster(n_segments, 0.9, 0.9)
     adjacency = torch.from_numpy(nx.to_numpy_array(graph))
     # Connections among segments
     # adjacency = torch.rand(n_segments, n_segments) < 0.1
@@ -61,8 +61,8 @@ def main():
     # TODO check how to proceed in other impl
 
     target = torch.eye(N_SEGMENTS)
-    criterion = nn.MSELoss(passengers, target)
-    print("Initial loss: ", criterion(passengers))
+    # criterion = nn.MSELoss(passengers, target)
+    # print("Initial loss: ", criterion(passengers))
 
     show_city(adjacency)
 
